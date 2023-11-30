@@ -98,6 +98,43 @@ def delete_team(conn, cursor):
     
     conn.commit()
     conn.close()
+    
+# Adds sport to the Sport table
+def add_sport(conn, cursor):
+    # Prompts user for team and school name
+    s_name = input("What is the name of the sport? ")
+    
+    # SQL variables and statement
+    add = """INSERT INTO Sport(S_Name)
+             VALUES(?)"""     
+                 
+    cursor.execute(add, (s_name,))
+        
+    conn.commit()
+    conn.close()
+
+# Lists sports currently in Sport table
+def list_sport(conn, cursor):
+    # Fetches list of sports
+    cursor.execute("SELECT SportID, S_Name FROM Sport")
+    results = cursor.fetchall()
+    
+    for row in results:
+        print(row)
+    
+    conn.commit()
+    conn.close()
+    
+# Deletes sport from Sport table
+def delete_sport(conn, cursor):
+    s_id = int(input("What is the sport ID you would like to delete? "))
+    
+    remove = """DELETE FROM Sport WHERE SportID = ?"""
+                
+    cursor.execute(remove, (s_id,))
+    
+    conn.commit()
+    conn.close()
 
 # Used to manipulate the database
 def database_main():
@@ -142,13 +179,13 @@ def database_main():
         elif ch == 8:
             delete_team(conn,cursor)
         elif ch == 9:
-            pass
+            add_sport(conn, cursor)
         elif ch == 10:
             pass
         elif ch == 11:
-            pass
+            list_sport(conn, cursor)
         elif ch == 12:
-            pass
+            delete_sport(conn, cursor)
         elif ch == 13:
             conn.commit()
             conn.close()
