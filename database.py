@@ -60,25 +60,70 @@ def create_teammatch():
 
     return teammatch
 
+# Adds team to the Team table
+def add_team(conn, cursor):
+    # Prompts user for team and school name
+    t_name = input("What is the name of the team? ")
+    school = input("What school is this team from? ")
+    
+    # SQL variables and statement
+    add = """INSERT INTO Team(T_Name, School)
+             VALUES(?, ?)"""     
+    team = (t_name, school)
+                 
+    cursor.execute(add, team)
+        
+    conn.commit()
+    conn.close()
+
+# Lists teams currently in database
+def list_team(conn, cursor):
+    # Fetches list of teams
+    cursor.execute("SELECT TeamID, T_Name, School FROM Team")
+    results = cursor.fetchall()
+    
+    for row in results:
+        print(row)
+    
+    conn.commit()
+    conn.close()
+    
+# Deletes team from TEAM table
+def delete_team(conn, cursor):
+    team_id = int(input("What is the team ID you would like to delete? "))
+    
+    remove = """DELETE FROM Team WHERE TeamID = ?"""
+                
+    cursor.execute(remove, (team_id,))
+    
+    conn.commit()
+    conn.close()
+
 # Used to manipulate the database
 def database_main():
     try:
         conn = sqlite3.connect('match.db')
         cursor = conn.cursor()
+        
+        # Foreign key enforcement
+        cursor.execute("PRAGMA foreign_keys=ON")
     
         # Choice list for operation
         print("What would you like to do?")
         print("1) Add Match")
         print("2) Update Match")
-        print("3) Delete Match")
-        print("4) Add Team")
-        print("5) Update Team")
-        print("6) Delete Team")
-        print("7) Add Sport")
-        print("8) Update Sport")
-        print("9) Delete Sport")
-        print("10) Quit program")
-        ch = int(input)
+        print("3) Get list of matches")
+        print("4) Delete Match")
+        print("5) Add Team")
+        print("6) Update Team")
+        print("7) Get list of teams")
+        print("8) Delete Team")
+        print("9) Add Sport")
+        print("10) Update Sport")
+        print("11) Get list of sports")
+        print("12) Delete Sport")
+        print("13) Quit program")
+        ch = int(input())
         
         if ch == 1:
             pass
@@ -89,18 +134,25 @@ def database_main():
         elif ch == 4:
             pass
         elif ch == 5:
-            pass
+            add_team(conn, cursor)
         elif ch == 6:
             pass
         elif ch == 7:
-            pass
+            list_team(conn, cursor)
         elif ch == 8:
-            pass
+            delete_team(conn,cursor)
         elif ch == 9:
             pass
         elif ch == 10:
+            pass
+        elif ch == 11:
+            pass
+        elif ch == 12:
+            pass
+        elif ch == 13:
             conn.commit()
             conn.close()
+            return
         else:
             print("Option not available. Did you enter a value outside of 1-10?")
             time.sleep(2)
