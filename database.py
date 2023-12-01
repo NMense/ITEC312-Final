@@ -136,6 +136,65 @@ def delete_sport(conn, cursor):
     conn.commit()
     conn.close()
 
+# Adds match to Match and Teammatch
+def add_match(conn, cursor):
+    sport = int(input("What is the sportID of the sport being played? "))
+    team1 = input("What is the the teamID of the home team? ")
+    team2 = input("What is the the teamID of the away team? ")
+    date = input("What is the date of the match? Format: YYYY-MM-DD HH:MM ")
+    loc = input("What is the location of the match being played? ")
+    
+    # Adds row to Match
+    match = (sport, date, loc)
+    add_match = """INSERT INTO Match(SportID, Date, Location)
+                VALUES(?, ?, ?)"""
+    cursor.execute(add_match, match)
+    
+    # Finds newly created matchid in Match
+    matchid = find_match(conn, cursor, match)
+
+    add_teammatch = """INSERT INTO Teammatch(MatchID, TeamID)
+                        VALUES(?,?)"""
+    teammatch1 = (matchid, team1)                    
+    teammatch2 = (matchid, team2)
+    
+    cursor.execute(add_teammatch, teammatch1)
+    cursor.execute(add_teammatch, teammatch2)
+    
+    conn.commit()
+    print("Match has been created")
+    conn.close()
+
+# Finds match in Match
+def find_match(conn, cursor, match):
+    search = """SELECT MatchID FROM Match WHERE SportID = ? AND Date = ? AND Location = ?"""
+    
+    result = cursor.execute(search, match)
+    result = cursor.fetchone()
+    print("MatchID is", result)
+
+# Lists matches in Match
+def list_match(conn, cursor):
+    cursor.execute("SELECT * FROM Match")
+    results = cursor.fetchall()
+    
+    print("MatchID, Date, Location, SportID")
+    for row in results:
+        print(row)
+        
+    conn.close()
+
+# Deletes match from Match
+def delete_match(conn, cursor):
+    m_id = int(input("What is the MatchID you would like to delete? "))
+    
+    remove = """DELETE FROM Match WHERE MatchID = ?"""
+                
+    cursor.execute(remove, (m_id,))
+    
+    conn.commit()
+    conn.close()
+
 # Used to manipulate the database
 def database_main():
     try:
@@ -163,13 +222,13 @@ def database_main():
         ch = int(input())
         
         if ch == 1:
-            pass
+            add_match(conn, cursor)
         elif ch == 2:
             pass
         elif ch == 3:
-            pass
+            list_match(conn, cursor)
         elif ch == 4:
-            pass
+            delete_match(conn, cursor)
         elif ch == 5:
             add_team(conn, cursor)
         elif ch == 6:
@@ -200,6 +259,9 @@ def database_main():
         
     except ValueError:
             print("Value Error! Did you enter a letter for a number?")
+    
+    except sqlite3.IntegrityError as e:
+        print("Integrity Error!")
+        print(e)
 
 database_main()
-# test
