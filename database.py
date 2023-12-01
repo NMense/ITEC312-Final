@@ -98,6 +98,18 @@ def delete_team(conn, cursor):
     
     conn.commit()
     conn.close()
+
+# Searches for a team by team_id
+def search_team_by_id(conn, cursor, team_id):
+    search_query = "SELECT TeamID, T_Name, School FROM Team WHERE TeamID = ?"
+    
+    cursor.execute(search_query, (team_id,))
+    team = cursor.fetchone()
+    
+    if team:
+        print(f"Team found - ID: {team[0]}, Name: {team[1]}, School: {team[2]}")
+    else:
+        print("Team not found for the given ID.")
     
 # Adds sport to the Sport table
 def add_sport(conn, cursor):
@@ -135,6 +147,18 @@ def delete_sport(conn, cursor):
     
     conn.commit()
     conn.close()
+
+# Searches for a sport by sport_id
+def search_sport_by_id(conn, cursor, sport_id):
+    search_query = "SELECT SportID, S_Name FROM Sport WHERE SportID = ?"
+    
+    cursor.execute(search_query, (sport_id,))
+    sport = cursor.fetchone()
+    
+    if sport:
+        print(f"Sport found - ID: {sport[0]}, Name: {sport[1]}")
+    else:
+        print("Sport not found for the given ID.")
 
 # Adds match to Match and Teammatch
 def add_match(conn, cursor):
