@@ -79,9 +79,10 @@ def add_team(conn, cursor):
 # Lists teams currently in database
 def list_team(conn, cursor):
     # Fetches list of teams
-    cursor.execute("SELECT TeamID, T_Name, School FROM Team")
+    cursor.execute("SELECT * FROM Team")
     results = cursor.fetchall()
     
+    print("TeamID, T_Name, School")
     for row in results:
         print(row)
     
@@ -128,9 +129,10 @@ def add_sport(conn, cursor):
 # Lists sports currently in Sport table
 def list_sport(conn, cursor):
     # Fetches list of sports
-    cursor.execute("SELECT SportID, S_Name FROM Sport")
+    cursor.execute("SELECT * FROM Sport")
     results = cursor.fetchall()
     
+    print("SportID, S_Name")
     for row in results:
         print(row)
     
@@ -177,6 +179,7 @@ def add_match(conn, cursor):
     # Finds newly created matchid in Match
     matchid = find_match(conn, cursor, match)
 
+    # Adds to Teammatch with no scores
     add_teammatch = """INSERT INTO Teammatch(MatchID, TeamID)
                         VALUES(?,?)"""
     teammatch1 = (matchid, team1)                    
@@ -193,9 +196,15 @@ def add_match(conn, cursor):
 def find_match(conn, cursor, match):
     search = """SELECT MatchID FROM Match WHERE SportID = ? AND Date = ? AND Location = ?"""
     
+    # Gets MatchID as tuple
     result = cursor.execute(search, match)
     result = cursor.fetchone()
-    print("MatchID is", result)
+    
+    # Converts to str and searchs for numeric values
+    m_id = tuple_to_int(result)
+    print("MatchID is", m_id)
+    
+    return m_id
 
 # Lists matches in Match
 def list_match(conn, cursor):
@@ -217,7 +226,53 @@ def delete_match(conn, cursor):
     cursor.execute(remove, (m_id,))
     
     conn.commit()
-    conn.close()
+
+# Updates match scores in Teammatch
+def update_match(conn, cursor):
+    m_id = int(input("What is the MatchID you are trying to update? "))
+    
+    teammatchfind = """SELECT TeamID FROM Teammatch WHERE MatchID = ?"""
+    results = cursor.execute(teammatchfind, (m_id,))
+    results = cursor.fetchall()
+    
+    for row in results:
+        teamid = tuple_to_int(row)
+        team = find_team_name(conn, cursor, teamid)
+        
+        print("What was the points for", team, "? ")
+        score = int(input()) 
+        var = (score, m_id, teamid)
+        
+        update_teammatch(conn, cursor, var)
+    
+    conn.commit()
+    print("Score has been updated")
+     
+# Updates score in Teammatch
+def update_teammatch(conn, cursor, var):
+    update = """UPDATE Teammatch SET Score = ? WHERE MatchID = ? AND TeamID = ?"""
+    
+    cursor.execute(update, var)
+      
+# Converts tuplt to str to search for numeric values and return as int
+def tuple_to_int(num):
+    m_id = ""
+    new_id = str(num)
+    for char in new_id:
+        if char.isnumeric():
+            m_id += char
+    
+    # Returns as int
+    m_id = int(m_id) 
+    return m_id
+
+# Returns the name of a team from Team
+def find_team_name(conn, cursor, t_id):
+    search = """SELECT T_Name FROM Team WHERE TeamID = ?"""
+    
+    result = cursor.execute(search, (t_id,))
+    result = cursor.fetchone()
+    return result
 
 # Used to manipulate the database
 def database_main():
@@ -248,7 +303,7 @@ def database_main():
         if ch == 1:
             add_match(conn, cursor)
         elif ch == 2:
-            pass
+            update_match(conn, cursor)
         elif ch == 3:
             list_match(conn, cursor)
         elif ch == 4:
@@ -286,6 +341,10 @@ def database_main():
     
     except sqlite3.IntegrityError as e:
         print("Integrity Error!")
+        print(e)
+    
+    except sqlite3.ProgrammingError as e:
+        print("Programming Error!")
         print(e)
 
 database_main()
