@@ -75,6 +75,39 @@ def add_team(conn, cursor):
         
     conn.commit()
     conn.close()
+    
+# Updates team field in Team
+def update_team(conn, cursor):
+    team = int(input("What is the TeamID you are trying to update? "))
+    
+    # Menu for choice
+    print("Choose the field to update")
+    print("1) Team Name")
+    print("2) School")
+    ch = int(input())
+    
+    # Uses ch from menu
+    # Updates name for TeamID of choice
+    if ch == 1:
+        name = input("What is the new name of the team? ")
+        
+        update = """UPDATE Team SET T_Name = ? WHERE TeamID = ?"""
+        fields = (name, team)
+        cursor.execute(update, fields)
+        
+        conn.commit()
+        print("Name has been updated")
+        
+    # Updates school for TeamID of choice
+    elif ch == 2:
+        school = input("What is the new school of the team? ")
+        
+        update = """UPDATE Team SET School = ? WHERE TeamID = ?"""
+        fields = (school, team)
+        cursor.execute(update, fields)
+        
+        conn.commit()
+        print("School has been updated")
 
 # Lists teams currently in database
 def list_team(conn, cursor):
@@ -125,6 +158,19 @@ def add_sport(conn, cursor):
         
     conn.commit()
     conn.close()
+    
+# Updates name of sport
+def update_sport(conn, cursor):
+    sport = int(input("What is the SportID you are trying to update? "))
+    
+    name = input("What is the new name of the sport? ")
+    
+    update = """UPDATE Sport SET S_Name = ? WHERE SportID = ?"""
+    fields = (name, sport)
+    cursor.execute(update, fields)
+    
+    conn.commit()
+    print("Name has been updated")
 
 # Lists sports currently in Sport table
 def list_sport(conn, cursor):
@@ -311,7 +357,7 @@ def database_main():
         elif ch == 5:
             add_team(conn, cursor)
         elif ch == 6:
-            pass
+            update_team(conn, cursor)
         elif ch == 7:
             list_team(conn, cursor)
         elif ch == 8:
@@ -319,7 +365,7 @@ def database_main():
         elif ch == 9:
             add_sport(conn, cursor)
         elif ch == 10:
-            pass
+            update_sport(conn, cursor)
         elif ch == 11:
             list_sport(conn, cursor)
         elif ch == 12:
@@ -345,6 +391,10 @@ def database_main():
     
     except sqlite3.ProgrammingError as e:
         print("Programming Error!")
+        print(e)
+        
+    except sqlite3.OperationalError as e:
+        print("Operational Error!")
         print(e)
 
 database_main()
