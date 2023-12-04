@@ -285,46 +285,71 @@ def database_main():
     
         # Choice list for operation
         print("What would you like to do?")
-        print("1) Add Match")
-        print("2) Update Match")
-        print("3) Get list of matches")
-        print("4) Delete Match")
-        print("5) Add Team")
-        print("6) Update Team")
-        print("7) Get list of teams")
-        print("8) Delete Team")
-        print("9) Add Sport")
-        print("10) Update Sport")
-        print("11) Get list of sports")
-        print("12) Delete Sport")
-        print("13) Quit program")
+        print("1) Match options")
+        print("2) Team options")
+        print("3) Sport options")
+        print("4) Quit program")
         ch = int(input())
         
-        if ch == 1:
-            add_match(conn, cursor)
-        elif ch == 2:
-            update_match(conn, cursor)
-        elif ch == 3:
-            list_match(conn, cursor)
-        elif ch == 4:
-            delete_match(conn, cursor)
-        elif ch == 5:
-            add_team(conn, cursor)
-        elif ch == 6:
-            pass
-        elif ch == 7:
-            list_team(conn, cursor)
-        elif ch == 8:
-            delete_team(conn,cursor)
-        elif ch == 9:
-            add_sport(conn, cursor)
-        elif ch == 10:
-            pass
-        elif ch == 11:
-            list_sport(conn, cursor)
-        elif ch == 12:
-            delete_sport(conn, cursor)
-        elif ch == 13:
+        if ch == 1: #Match sub menu
+            print("Match Menu:")
+            print("1) Add Match")
+            print("2) Update Match")
+            print("3) List All Matches")
+            print("4) Delete Match")
+            ch2 = int(input())
+            if ch2 == 1:
+                add_match(conn, cursor)
+            elif ch2 == 2:
+                update_match(conn, cursor)
+            elif ch2 == 3:
+                list_match(conn, cursor)
+            elif ch2 == 4:
+                delete_match(conn, cursor)
+            else:
+                print("Option not available. Did you enter the correct value?")
+                time.sleep(2)
+                database_main()
+        elif ch == 2: #Team sub menu
+            print("Team Menu:")
+            print("1) Add Team")
+            print("2) Update Team")
+            print("3) List All Teams")
+            print("4) Delete Team")
+            ch3 = int(input())
+            if ch3 == 1:
+                add_team(conn, cursor)
+            elif ch3 == 2: #Update Team function needs added
+                pass
+            elif ch3 == 3:
+                list_team(conn, cursor)
+            elif ch3 == 4:
+                delete_team(conn,cursor)
+            else:
+                print("Option not available. Did you enter the correct value?")
+                time.sleep(2)
+                database_main()
+        elif ch == 3: #Sport sub menu
+            print("Sport Menu:")
+            print("1) Add Sport")
+            print("2) Update Sport")
+            print("3) List All Sports")
+            print("4) Delete Sport")
+            ch4 = int(input())
+            if ch4 == 1:
+                add_sport(conn, cursor)
+            elif ch4 == 2: #Update Sport function needs added
+                pass
+            elif ch4 == 2:
+                list_sport(conn, cursor)
+            elif ch4 == 3:
+                delete_sport(conn, cursor)
+            else:
+                print("Option not available. Did you enter the correct value?")
+                time.sleep(2)
+                database_main()
+        elif ch == 4: #Save and quit program
+            print("Goodbye!")
             conn.commit()
             conn.close()
             return
