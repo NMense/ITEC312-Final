@@ -11,6 +11,9 @@ def database_main():
         cursor.execute("PRAGMA foreign_keys=ON")
     
         # Choice list for operation
+        print("ITEC 312 Final Project by Nolan Mense, Elijah Seals, and Jesse Alvarez.")
+        print('\n')
+        print(">Sport Database Management Program<")
         print("What would you like to do?")
         print("1) Match options")
         print("2) Team options")
