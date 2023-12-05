@@ -2,6 +2,9 @@ from database import Database
 import sqlite3
 import time
 
+print("ITEC 312 Final Project by Nolan Mense, Elijah Seals, and Jesse Alvarez.")
+print('\n')
+
 def database_main():
     try:
         conn = sqlite3.connect('match.db')
@@ -11,9 +14,8 @@ def database_main():
         cursor.execute("PRAGMA foreign_keys=ON")
     
         # Choice list for operation
-        print("ITEC 312 Final Project by Nolan Mense, Elijah Seals, and Jesse Alvarez.")
-        print('\n')
         print(">Sport Database Management Program<")
+        print('\n')
         print("What would you like to do?")
         print("1) Match options")
         print("2) Team options")
